@@ -1,5 +1,5 @@
 from flask import render_template, request, redirect, url_for
-import json #to parse incoming data from api
+import json  # to parse incoming data from api
 from . import app
 # from .models import Company, db
 
@@ -15,7 +15,7 @@ def home():
 def search_form():
     """
     """
-    return render_template('home.html')
+    return render_template('./stocks/search.html')
 
 
 @app.route('/search', methods=['POST'])
