@@ -25,7 +25,7 @@ def search_results():
     """
     # hit API with given stock symbol
     symbol = request.form.get('symbol')
-    url = f'https://api.iextrading.com/1.0/stock/{symbol}/company'
+    url = 'https://api.iextrading.com/1.0/stock/{}/company'.format(symbol)
     response = requests.get(url)
 
     # # normalize data
