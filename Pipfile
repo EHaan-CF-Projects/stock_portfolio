@@ -7,10 +7,14 @@ verify_ssl = true
 pep8 = "*"
 autopep8 = "*"
 python = "*"
+flask-migrate = "*"
 
 [packages]
 python-dotenv = "*"
 flask = "*"
+requests = "*"
+flask-sqlalchemy = "*"
+psycopg2-binary = "*"
 
 [requires]
 python_version = "3.7"
