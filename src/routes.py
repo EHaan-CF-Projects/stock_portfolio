@@ -35,10 +35,9 @@ def search_results():
     # store results in database
     db.session.add(company)
     db.session.commit()  # adds infor to the database here
-    return company.name
 
     # redirect to porfolio page
-    # return redirect(url_for('.portfolio'))  # .portfolio for the portfolio function, then it finds and references the decorator's route.
+    return redirect(url_for('.portfolio'))  # .portfolio for the portfolio function, then it finds and references the decorator's route.
 
 
 @app.route('/portfolio')
@@ -46,4 +45,4 @@ def portfolio():
     """Function that will render the portfolio page.
     """
     return render_template('./stocks/stocks.html')
-#     return str(Company.query.all())
+    return str(Company.query.all())
