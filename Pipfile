@@ -14,6 +14,7 @@ requests = "*"
 flask-sqlalchemy = "*"
 psycopg2-binary = "*"
 flask-migrate = "*"
+pytest = "*"
 
 [requires]
 python_version = "3.7"
