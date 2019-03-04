@@ -38,6 +38,7 @@ def db(app, request):
     request.addfinalizer(teardown)
     return _db
 
+
 @pytest.fixture()
 def session(db, request):
     """
@@ -55,3 +56,4 @@ def session(db, request):
 
     request.addfinalizer(teardown)
     return session
+    
