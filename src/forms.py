@@ -3,13 +3,13 @@ from wtforms import StringField
 from wtforms.validators import DataRequired
 
 
-class CityForm(FlaskForm):
+class CompanyForm(FlaskForm):
     """
     """
     zipcode = StringField('symbol', validators=[DataRequired()])
 
 
-class CityAddForm(FlaskForm):
+class CompanyAddForm(FlaskForm):
     """
     """
     zipcode = StringField('symbol', validators=[DataRequired()])

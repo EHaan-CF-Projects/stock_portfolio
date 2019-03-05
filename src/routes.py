@@ -4,6 +4,7 @@ import requests
 import json
 from . import app
 from .models import Company, db
+from .forms import CompanyForm, CompanyAddForm
 
 
 @app.route('/')
@@ -17,7 +18,7 @@ def home():
 def search_form():
     """Function that will render the search page.
     """
-    form = CityForm()
+    form = CompanyForm()
 
     if form.validate_on_submit():
         symbol = form.data['symbol']
@@ -41,7 +42,7 @@ def preview_company():
         'name': session['context']['name'],
         'symbol': session['symbol']
     }
-    form = CityAddForm(**form_context)
+    form = CompanyAddForm(**form_context)
 
     if form.validate_on_submit():
         try:
