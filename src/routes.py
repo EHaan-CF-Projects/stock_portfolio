@@ -1,9 +1,10 @@
-from flask import render_template, request, redirect, url_for, abort
+from flask import render_template, request, redirect, url_for, abort, session
 from sqlalchemy.exc import DBAPIError, IntegrityError
 import requests
 import json
 from . import app
 from .models import Company, db
+from .forms import CompanyForm, CompanyAddForm
 
 
 @app.route('/')
@@ -13,34 +14,54 @@ def home():
     return render_template('home.html')
 
 
-@app.route('/search', methods=['GET'])
+@app.route('/search', methods=['GET', 'POST'])
 def search_form():
     """Function that will render the search page.
     """
-    return render_template('./stocks/search.html'), 200
+    form = CompanyForm()
+
+    if form.validate_on_submit():
+        symbol = form.data['symbol']
+
+        url = 'https://api.iextrading.com/1.0/stock/{}/company'.format(symbol)
+
+        response = requests.get(url)
+        data = json.loads(response.text)
+        session['name'] = data['companyName']
+        session['symbol'] = data['symbol']
+
+        return redirect(url_for('.preview_company'))
+
+    return render_template('./stocks/search.html', form=form), 200
 
 
-@app.route('/search', methods=['POST'])
-def search_results():
+@app.route('/company', methods=['GET', 'POST'])
+def preview_company():
     """
     """
-    # hit API with given stock symbol
-    symbol = request.form.get('symbol')
-    url = 'https://api.iextrading.com/1.0/stock/{}/company'.format(symbol)
-    response = requests.get(url)
+    form_context = {
+        'name': session['name'],
+        'symbol': session['symbol'],
+    }
+    form = CompanyAddForm(**form_context)
 
-    # # normalize data
-    data = json.loads(response.text)
-    try:
-        company = Company(name=data['companyName'], symbol=data['symbol'])
+    if form.validate_on_submit():
+        try:
+            company = Company(name=form.data['name'], symbol=form.data['symbol'])
+            db.session.add(company)
+            db.session.commit()
+        except (DBAPIError, IntegrityError):
+            # insert flash?
+            return render_template('./stocks/search.html', form=form)
 
-        # store results in database
-        db.session.add(company)
-        db.session.commit()  # adds infor to the database here
-    except (DBAPIError, IntegrityError):
-        abort(400)
-    # redirect to porfolio page
-    return redirect(url_for('.portfolio')), 302  # .portfolio for the portfolio function, then it finds and references the decorator's route.
+        return redirect(url_for('.portfolio'))
+
+    return render_template(
+        './stocks/company.html',
+        form=form,
+        symbol=form_context['symbol'],
+        name=session['name'],
+        ), 200
 
 
 @app.route('/portfolio')
@@ -48,5 +69,3 @@ def portfolio():
     """Function that will render the portfolio page.
     """
     return render_template('./stocks/stocks.html'), 200
-
-

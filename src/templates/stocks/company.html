@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+
+{% block page_title %}
+<div class="container">
+    <p>Company: {{ name }}</p>
+    <p>Symbol:  {{ symbol }}</p>
+
+    <form method="POST" action="{{ url_for(".preview_company") }}">
+        {{ form.hidden_tag() }}
+        <div class="hidden" hidden>
+            {{ form.symbol.label }}{{ form.symbol(size=10) }}
+            {{ form.name.label }}{{ form.name(size=20) }}
+        </div>
+        <input type="submit" value="Go">
+    </form>
+</div>
+{% endblock page_title %}
