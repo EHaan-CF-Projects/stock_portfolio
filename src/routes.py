@@ -68,4 +68,5 @@ def preview_company():
 def portfolio():
     """Function that will render the portfolio page.
     """
-    return render_template('./stocks/stocks.html'), 200
+    companies = Company.query.all()
+    return render_template('./stocks/stocks.html', companies=companies), 200
