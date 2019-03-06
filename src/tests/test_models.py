@@ -8,14 +8,7 @@ def test_create_company(session):
 
     assert company.id > 0
 
-    # companies = Company.query.all()
+    companies = Company.query.all()
 
-    # assert companies == 1
+    assert companies[0].name == 'Google'
 
-
-# def test_create_another_company(session):
-#     company = Company(name='Apple', symbol='aapl')
-#     session.add(company)
-#     session.commit()
-
-#     assert company.id > 0
