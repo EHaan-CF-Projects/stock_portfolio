@@ -3,6 +3,11 @@
 {% block page_title %}
 <div class="container">
   <h1>Portfolio</h1>
-  {% for city in %}
+  {% for company in companies %}
+  <div>
+    <p>Company Name: {{ company.name }}</p>
+    <p>Company Symbol: {{ company.symbol }}</p>
+  </div>
+  {% endfor %}
 </div>
 {% endblock page_title %}
