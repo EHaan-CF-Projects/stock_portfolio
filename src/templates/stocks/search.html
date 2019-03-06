@@ -6,9 +6,7 @@
   <form method="POST" action="{{ url_for(".search_form") }}">
     {{ form.hidden_tag() }}
     {{ form.symbol.label }}{{ form.symbol(size=10) }}
-    <label for="symbol">Company Name</label>
-    <!-- <input id="symbol" name="symbol" type="text">
-    <input type="submit" value="Go"> -->
+    <input type="submit" value="Go">
   </form>
 </div>
 {% endblock page_title %}

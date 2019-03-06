@@ -1,4 +1,4 @@
-from flask import render_template, request, redirect, url_for, abort
+from flask import render_template, request, redirect, url_for, abort, session
 from sqlalchemy.exc import DBAPIError, IntegrityError
 import requests
 import json
@@ -24,10 +24,11 @@ def search_form():
         symbol = form.data['symbol']
 
         url = 'https://api.iextrading.com/1.0/stock/{}/company'.format(symbol)
+
         response = requests.get(url)
         data = json.loads(response.text)
-        session['context'] = data
-        session['symbol'] = symbol
+        session['name'] = data['companyName']
+        session['symbol'] = data['symbol']
 
         return redirect(url_for('.preview_company'))
 
@@ -39,21 +40,28 @@ def preview_company():
     """
     """
     form_context = {
-        'name': session['context']['name'],
-        'symbol': session['symbol']
+        'name': session['name'],
+        'symbol': session['symbol'],
     }
     form = CompanyAddForm(**form_context)
 
     if form.validate_on_submit():
         try:
             company = Company(name=form.data['name'], symbol=form.data['symbol'])
-            db.session.add(city)
+            db.session.add(company)
             db.session.commit()
         except (DBAPIError, IntegrityError):
             # insert flash?
             return render_template('./stocks/search.html', form=form)
 
         return redirect(url_for('.portfolio'))
+
+    return render_template(
+        './stocks/company.html',
+        form=form,
+        symbol=form_context['symbol'],
+        name=session['name'],
+        ), 200
 
 
 @app.route('/portfolio')
