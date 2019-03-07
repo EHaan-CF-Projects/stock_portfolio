@@ -1,4 +1,4 @@
-from flask import render_template, request, redirect, url_for, abort, session
+from flask import render_template, request, redirect, url_for, abort, session, flash
 from sqlalchemy.exc import DBAPIError, IntegrityError
 import requests
 import json
@@ -54,11 +54,11 @@ def preview_company():
 
     if form.validate_on_submit():
         try:
-            company = Company(name=form.data['name'], symbol=form.data['symbol'])
+            company = Company(name=form.data['name'], symbol=form.data['symbol'], portfolio_id=form.data['portfolios'])
             db.session.add(company)
             db.session.commit()
         except (DBAPIError, IntegrityError):
-            # insert flash?
+            flash('Something went terribly wrong.')
             db.session.rollback()
             return render_template('./stocks/search.html', form=form)
 
@@ -79,8 +79,8 @@ def portfolio():
             db.session.add(portfolio)
             db.session.commit()
         except (DBAPIError, IntegrityError):
-            # add flash
-            return render_template('stocks.stocks.html', form=form)
+            flash('Something went terribly wrong.')
+            return render_template('stocks/stocks.html', form=form)
 
         return redirect(url_for('.search_form'))
 

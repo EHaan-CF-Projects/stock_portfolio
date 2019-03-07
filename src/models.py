@@ -26,7 +26,7 @@ class Portfolio(db.Model):
     __tablename__ = 'portfolios'
 
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(256), index=True)
+    name = db.Column(db.String(256), index=True, unique=True)
 
     companies = db.relationship('Company', backref='portfolio', lazy=True)
 
