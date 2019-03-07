@@ -3,8 +3,8 @@ from sqlalchemy.exc import DBAPIError, IntegrityError
 import requests
 import json
 from . import app
-from .models import Company, Portfolio
-from .forms import CompanyForm, CompanyAddForm
+from .models import Company, Portfolio, db
+from .forms import CompanyForm, CompanyAddForm, PortfolioCreateForm
 
 
 @app.add_template_global
@@ -67,7 +67,7 @@ def preview_company():
     return render_template('./stocks/company.html', form=form, symbol=form_context['symbol'], name=session['name']), 200
 
 
-@app.route('/portfolio')
+@app.route('/portfolio', methods=['GET', 'POST'])
 def portfolio():
     """Function that will render the portfolio page.
     """
@@ -75,7 +75,7 @@ def portfolio():
 
     if form.validate_on_submit():
         try:
-            portfolio = portfolio(name=form.data['name'])
+            portfolio = Portfolio(name=form.data['name'])
             db.session.add(portfolio)
             db.session.commit()
         except (DBAPIError, IntegrityError):
