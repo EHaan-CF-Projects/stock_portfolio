@@ -1,10 +1,17 @@
-from flask import render_template, request, redirect, url_for, abort, session
+from flask import render_template, request, redirect, url_for, abort, session, flash
 from sqlalchemy.exc import DBAPIError, IntegrityError
 import requests
 import json
 from . import app
-from .models import Company, db
-from .forms import CompanyForm, CompanyAddForm
+from .models import Company, Portfolio, db
+from .forms import CompanyForm, CompanyAddForm, PortfolioCreateForm
+
+
+@app.add_template_global
+def get_portfolios():
+    """
+    """
+    return Portfolio.query.all()
 
 
 @app.route('/')
@@ -47,26 +54,35 @@ def preview_company():
 
     if form.validate_on_submit():
         try:
-            company = Company(name=form.data['name'], symbol=form.data['symbol'])
+            company = Company(name=form.data['name'], symbol=form.data['symbol'], portfolio_id=form.data['portfolios'])
             db.session.add(company)
             db.session.commit()
         except (DBAPIError, IntegrityError):
-            # insert flash?
+            flash('Something went terribly wrong.')
+            db.session.rollback()
             return render_template('./stocks/search.html', form=form)
 
         return redirect(url_for('.portfolio'))
 
-    return render_template(
-        './stocks/company.html',
-        form=form,
-        symbol=form_context['symbol'],
-        name=session['name'],
-        ), 200
+    return render_template('./stocks/company.html', form=form, symbol=form_context['symbol'], name=session['name']), 200
 
 
-@app.route('/portfolio')
+@app.route('/portfolio', methods=['GET', 'POST'])
 def portfolio():
     """Function that will render the portfolio page.
     """
+    form = PortfolioCreateForm()
+
+    if form.validate_on_submit():
+        try:
+            portfolio = Portfolio(name=form.data['name'])
+            db.session.add(portfolio)
+            db.session.commit()
+        except (DBAPIError, IntegrityError):
+            flash('Something went terribly wrong.')
+            return render_template('stocks/stocks.html', form=form)
+
+        return redirect(url_for('.search_form'))
+
     companies = Company.query.all()
-    return render_template('./stocks/stocks.html', companies=companies), 200
+    return render_template('./stocks/stocks.html', companies=companies, form=form), 200

@@ -6,6 +6,8 @@ verify_ssl = true
 [dev-packages]
 pep8 = "*"
 autopep8 = "*"
+pytest-watch = "*"
+pytest-cov = "*"
 
 [packages]
 python-dotenv = "*"

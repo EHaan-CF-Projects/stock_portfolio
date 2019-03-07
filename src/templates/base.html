@@ -21,6 +21,10 @@
     </nav>
   </header>
   <main>
+    {% for message in get_flashed_messages() %}
+    <div>{{ message }}</div>
+    {% endfor %}
+    
     {% block page_title %}
     <div class="container">
       <h1>the man behind the curtain</h1>
