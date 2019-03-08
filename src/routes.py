@@ -79,7 +79,7 @@ def portfolio():
 
     if form.validate_on_submit():
         try:
-            portfolio = Portfolio(name=form.data['name'])
+            portfolio = Portfolio(name=form.data['name'], user_id=session['user_id'])
             db.session.add(portfolio)
             db.session.commit()
         except (DBAPIError, IntegrityError):
