@@ -84,3 +84,8 @@ def company(session, portfolio):
     session.commit()
 
     return company
+
+# @pytest.fixture()
+# def client(app, db, session):
+#     """
+#     """
