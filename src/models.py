@@ -1,4 +1,5 @@
 from flask_sqlalchemy import SQLAlchemy
+from passlib.hash import sha256_crypt
 from datetime import datetime as dt
 from flask_migrate import Migrate
 from . import app
