@@ -1,11 +1,23 @@
 from . import app
 from flask import g, render_template, abort, flash, redirect, url_for, session
-from .models import db, Users
+from .models import db, User
 from .forms import AuthForm
 import functools
 
 
-@app.route('/register', method=['GET', 'POST'])
+@app.before_request
+def load_logged_in_user():
+    """
+    """
+    user_id = session.get('user_id')
+
+    if user_id is None:
+        g.user = None
+    else:
+        g.user = User.query.get(user_id)
+
+
+@app.route('/register', methods=['GET', 'POST'])
 def register():
     ""
     ""
@@ -17,7 +29,7 @@ def register():
         error = None
 
         if not email or not password:
-            error = 'Invalid username or password'
+            error = 'Invalid email or password'
 
         if User.query.filter_by(email=email).first() is not None:
             error = '{} has already been registered.'.format(email)
@@ -29,6 +41,8 @@ def register():
 
             flash('Welcome aboard! Please log in.')
             return redirect(url_for('.login'))
+        
+        flash(error)
 
     return render_template('/stocks/register.html', form=form)
 
@@ -44,19 +58,19 @@ def login():
         password = form.data['password']
         error = None
 
-    user = User.query.filter_by(email=email).first()
+        user = User.query.filter_by(email=email).first()
 
-    if user is None or not User.check_password_hash(user, password):
-        error = 'Invalid username or password.'
+        if user is None or not User.check_password_hash(user, password):
+            error = 'Invalid username or password.'
 
-    if error is None:
-        session.clear()
-        session['user_id'] = user.user_id
-        return redirect(url_for('.portfolio'))
+        if error is None:
+            session.clear()
+            session['user_id'] = user.id
+            return redirect(url_for('.portfolio'))
 
-    flash(error)
+        flash(error)
 
-    return render_template('auth/login.html', form=form)
+    return render_template('/stocks/login.html', form=form)
 
 
 def login_required(view):
@@ -67,18 +81,6 @@ def login_required(view):
 
         return view(**kwargs)
     return wrapped_view
-
-
-@app.before_request
-def load_logged_in_user():
-    """
-    """
-    user_id = session.get('user_id')
-
-    if user_id is None:
-        g.user = None
-    else:
-        g.user = User.query.get(user_id)
 
 
 @app.route('/logout')

@@ -33,4 +33,4 @@ class AuthForm(FlaskForm):
     """
     """
     email = StringField('email', validators=[DataRequired()])
-    password = PasswordField('password', validator=[DataRequired()])
+    password = PasswordField('password', validators=[DataRequired()])

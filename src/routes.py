@@ -5,6 +5,7 @@ import json
 from . import app
 from .models import Company, Portfolio, db
 from .forms import CompanyForm, CompanyAddForm, PortfolioCreateForm
+from .auth import login_required
 
 
 @app.add_template_global
@@ -22,6 +23,7 @@ def home():
 
 
 @app.route('/search', methods=['GET', 'POST'])
+@login_required
 def search_form():
     """Function that will render the search page.
     """
@@ -43,6 +45,7 @@ def search_form():
 
 
 @app.route('/company', methods=['GET', 'POST'])
+@login_required
 def preview_company():
     """
     """
@@ -68,6 +71,7 @@ def preview_company():
 
 
 @app.route('/portfolio', methods=['GET', 'POST'])
+@login_required
 def portfolio():
     """Function that will render the portfolio page.
     """

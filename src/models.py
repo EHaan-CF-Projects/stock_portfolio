@@ -29,7 +29,6 @@ class Portfolio(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.ForeignKey('users.id'), nullable=False)
     name = db.Column(db.String(256), index=True, unique=True)
-
     companies = db.relationship('Company', backref='portfolio', lazy=True)
 
     date_created = db.Column(db.DateTime, default=dt.now())
