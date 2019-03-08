@@ -18,6 +18,7 @@ psycopg2-binary = "*"
 flask-migrate = "*"
 pytest = "*"
 flask-wtf = "*"
+passlib = "*"
 
 [requires]
 python_version = "3.7"
