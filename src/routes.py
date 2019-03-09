@@ -10,23 +10,20 @@ from .auth import login_required
 
 @app.add_template_global
 def get_portfolios():
-    """
-    """
+    """Function to extract a list of portfolios from the database"""
     return Portfolio.query.all()
 
 
 @app.route('/')
 def home():
-    """Function to render the home page.
-    """
+    """Function to render the home page."""
     return render_template('home.html')
 
 
 @app.route('/search', methods=['GET', 'POST'])
 @login_required
 def search_form():
-    """Function that will render the search page.
-    """
+    """Function to render the search page."""
     form = CompanyForm()
 
     if form.validate_on_submit():
@@ -47,8 +44,7 @@ def search_form():
 @app.route('/company', methods=['GET', 'POST'])
 @login_required
 def preview_company():
-    """
-    """
+    """Function to render a company preview page."""
     form_context = {
         'name': session['name'],
         'symbol': session['symbol'],
@@ -73,8 +69,7 @@ def preview_company():
 @app.route('/portfolio', methods=['GET', 'POST'])
 @login_required
 def portfolio():
-    """Function that will render the portfolio page.
-    """
+    """Function to render the portfolio page."""
     form = PortfolioCreateForm()
 
     if form.validate_on_submit():
