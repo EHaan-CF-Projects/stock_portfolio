@@ -19,6 +19,7 @@
         {% if g.user %}
         <li><a href="{{ url_for(".search_form") }}">Search</a></li>
         <li><a href="{{ url_for(".portfolio") }}">Portfolio</a></li>
+        <li><a href="{{ url_for(".logout") }}">Logout</a></li>
         {% else %}
         <li><a href="{{ url_for(".register") }}">Register</a></li>
         <li><a href="{{ url_for(".login") }}">Login</a></li>

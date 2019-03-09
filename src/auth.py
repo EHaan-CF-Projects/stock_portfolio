@@ -89,5 +89,5 @@ def logout():
     """
     """
     session.clear()
-    flash('Thanks for being awesome!')
+    flash('Thank you for visiting!')
     return redirect(url_for('.login'))
