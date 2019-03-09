@@ -7,8 +7,7 @@ import functools
 
 @app.before_request
 def load_logged_in_user():
-    """
-    """
+    """Function to apply a user id to a session."""
     user_id = session.get('user_id')
 
     if user_id is None:
@@ -19,8 +18,7 @@ def load_logged_in_user():
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
-    ""
-    ""
+    """Function to render the registration page."""
     form = AuthForm()
 
     if form.validate_on_submit():
@@ -49,8 +47,7 @@ def register():
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
-    """
-    """
+    """Function to render the login page."""
     form = AuthForm()
 
     if form.validate_on_submit():
@@ -74,8 +71,10 @@ def login():
 
 
 def login_required(view):
+    """Function to require login before viewing a page."""
     @functools.wraps(view)
     def wrapped_view(**kwargs):
+        """Function to require a user to be logged in to view a page."""
         if g.user is None:
             abort(404)
 
@@ -86,8 +85,7 @@ def login_required(view):
 @app.route('/logout')
 @login_required
 def logout():
-    """
-    """
+    """Function to redirect a user to the login page, post logout."""
     session.clear()
-    flash('Thanks for being awesome!')
+    flash('Thank you for visiting!')
     return redirect(url_for('.login'))

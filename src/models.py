@@ -10,6 +10,7 @@ migrate = Migrate(app, db)
 
 
 class Company(db.Model):
+    """Instantiates a table of companies in the Company database."""
     __tablename__ = 'companies'
 
     id = db.Column(db.Integer, primary_key=True)
@@ -24,6 +25,7 @@ class Company(db.Model):
 
 
 class Portfolio(db.Model):
+    """Instantiates a table of portfolios in the Company database."""
     __tablename__ = 'portfolios'
 
     id = db.Column(db.Integer, primary_key=True)
@@ -38,8 +40,7 @@ class Portfolio(db.Model):
 
 
 class User(db.Model):
-    """
-    """
+    """Instantiates a table of users in the Company database."""
     __tablename__ = 'users'
 
     id = db.Column(db.Integer, primary_key=True)
@@ -58,8 +59,7 @@ class User(db.Model):
 
     @classmethod
     def check_password_hash(cls, user, password):
-        """
-        """
+        """Validates a user password"""
         if user is not None:
             if sha256_crypt.verify(password, user.password):
                 return True
