@@ -31,3 +31,19 @@ class TestPortfolioModel:
 #  TEST NOT WORKING - USER ID PULLED FROM SESSION INTO PORTFOLIO DATABASE?
     # def test_portfolio_user_id(self, portfolio):
     #     assert portfolio.user_id == 1
+
+
+class TestUserModel:
+    """Test new user records."""
+    def test_user_create(self, user):
+        """Test that a new user is added to the database on registration"""
+        assert user.id > 0
+
+    def test_user_email(self, user):
+        """Test that a user's email is added."""
+        assert user.email == 'test@test.com'
+
+    def test_user_check_password(self, user):
+        """Test that a user's password is added."""
+        from src.models import User
+        assert User.check_password_hash(user, 'password')
