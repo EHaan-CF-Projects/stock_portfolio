@@ -95,6 +95,7 @@ class TestAuthentication:
             '/logout',
             follow_redirects=True
         )
+        assert res.status_code == 200
 
     def test_logout_unauthenticated(self, client):
         """Tests an unauthenticated logout status."""
@@ -119,3 +120,62 @@ class TestAuthenticatedRoutes:
         res = client.get('/search')
         assert res.status_code == 404
     
+    def test_search_to_preview_redirect_status(self, authenticated_client, company):
+        """Test search to preview pages redirect status."""
+        res = authenticated_client.post(
+            '/search',
+            data={'symbol': 'goog'},
+            follow_redirects=True
+        )
+        assert res.status_code == 200
+
+    def test_search_to_company_preview_content(self, authenticated_client):
+        """Test user is redirected to preview page."""
+        res = authenticated_client.post(
+            '/search',
+            data={'symbol': 'goog'},
+            follow_redirects=True
+        )
+        assert b'Stock - Preview' in res.data
+
+    def test_company_preview_route_status_unauthenticated(self, client):
+        """Test unauthenticated user cannot preview company."""
+        res = client.get('/company')
+        assert res.status_code == 404
+
+    def test_preview_to_portfolio_redirect_status(self, authenticated_client, company):
+        """Tests a user will be redirected to portfolios page."""
+        res = authenticated_client.post(
+            '/search',
+            data={'symbol': 'goog'},
+            follow_redirects=True
+        )
+        res = authenticated_client.post(
+            '/company',
+            data={'name': 'Google', 'symbol': 'goog', 'portfolio_id': 1},
+            follow_redirects=True
+        )
+        assert res.status_code == 200
+
+    def test_portfolio_route_status_code(self, authenticated_client, company, portfolio):
+        """Test portfolio route status."""
+        res = authenticated_client.get('/portfolio')
+        assert res.status_code == 200
+
+    def test_portfolio_route_content(self, authenticated_client, company, portfolio):
+        res = authenticated_client.get('/portfolio')
+        assert b'Stock - Stocks' in res.data
+
+    def test_portfolio_route_status_unauthenticated(status, client, company, portfolio):
+        res = client.get('/portfolio')
+        assert res.status_code == 404
+
+    def test_portfolio_to_search_redirect_status(self, authenticated_client, company, portfolio, user):
+        res = authenticated_client.post(
+            '/portfolio',
+            data={'name': 'Test', 'user_id': 1},
+            follow_redirects=True
+        )
+        assert res.status_code == 200
+
+## Missing tests: portfolio selection dropdown, portfolio list
