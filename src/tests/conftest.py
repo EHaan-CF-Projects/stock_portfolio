@@ -29,7 +29,17 @@ def app(request):
     return _app
 
 
-# ==== Test Database Setup =====
+@pytest.fixture()
+def db(app, request):
+    """Testable application databases."""
+    def teardown():
+        _db.drop_all()
+
+    _db.app = app
+    _db.create_all()
+
+    request.addfinalizer(teardown)
+    return _db
 
 
 @pytest.fixture()
@@ -54,53 +64,6 @@ def session(db, request):
 
 
 @pytest.fixture()
-def db(app, request):
-    """Testable application databases."""
-    def teardown():
-        _db.drop_all()
-
-    _db.app = app
-    _db.create_all()
-
-    request.addfinalizer(teardown)
-    return _db
-
-
-@pytest.fixture()
-def portfolio(session):
-    """Testable portfolio databse table."""
-    portfolio = Portfolio(name='Default')
-
-    session.add(portfolio)
-    session.commit()
-
-    return portfolio
-
-
-@pytest.fixture()
-def company(session, portfolio):
-    """Testable Company database table."""
-    company = Company(name='Google', symbol='goog', portfolio=portfolio)
-
-    session.add(company)
-    session.commit()
-
-    return company
-
-
-@pytest.fixture()
-def user(session):
-    """Testable User database table."""
-    user = User(email='test@test.com', password='password')
-
-    session.add(user)
-    session.commit()
-    return user
-
-# ==== Test Client Setup =====
-
-
-@pytest.fixture()
 def client(app, db, session):
     """Testable client requests."""
     client = app.test_client()
@@ -113,6 +76,16 @@ def client(app, db, session):
 
 
 @pytest.fixture()
+def user(session):
+    """Testable User database table."""
+    user = User(email='test@test.com', password='password')
+
+    session.add(user)
+    session.commit()
+    return user
+
+
+@pytest.fixture()
 def authenticated_client(client, user):
     """Testable authenticated client"""
     client.post(
@@ -121,3 +94,26 @@ def authenticated_client(client, user):
         follow_redirects=True,
     )
     return client
+
+
+@pytest.fixture()
+def portfolio(session, user):
+    """Testable portfolio databse table."""
+    portfolio = Portfolio(name='Default')
+
+    session.add(portfolio)
+    session.commit()
+
+    return portfolio
+
+
+@pytest.fixture()
+def company(session, portfolio):
+    """Testable Company database table."""
+    company = Company(name='Google', symbol='goog', portfolio_id=portfolio.id)
+
+    session.add(company)
+    session.commit()
+
+    return company
+

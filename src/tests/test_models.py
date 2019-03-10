@@ -26,5 +26,8 @@ class TestPortfolioModel:
         assert portfolio.id > 0
 
     def test_portfolio_name(self, portfolio):
-        assert portfolio.name is not None
+        assert portfolio.name == 'Default'
 
+#  TEST NOT WORKING - USER ID PULLED FROM SESSION INTO PORTFOLIO DATABASE?
+    # def test_portfolio_user_id(self, portfolio):
+    #     assert portfolio.user_id == 1
