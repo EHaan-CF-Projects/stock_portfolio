@@ -15,6 +15,7 @@ class Company(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     portfolio_id = db.Column(db.ForeignKey('portfolios.id'), nullable=False)
+    user_id = db.Column(db.ForeignKey('users.id'), nullable=True)
     name = db.Column(db.String(256), index=True, unique=True)
     symbol = db.Column(db.String(256), index=True, unique=True)
 
@@ -47,6 +48,7 @@ class User(db.Model):
     email = db.Column(db.String(256), index=True, nullable=False, unique=True)
     password = db.Column(db.String(256), nullable=False)
     portfolios = db.relationship('Portfolio', backref='user', lazy=True)
+    companies = db.relationship('Company', backref='company', lazy=True)
 
     date_created = db.Column(db.DateTime, default=dt.now())
 
