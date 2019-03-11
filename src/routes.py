@@ -53,7 +53,7 @@ def preview_company():
 
     if form.validate_on_submit():
         try:
-            company = Company(name=form.data['name'], symbol=form.data['symbol'], portfolio_id=form.data['portfolios'])
+            company = Company(name=form.data['name'], symbol=form.data['symbol'], portfolio_id=form.data['portfolios'], user_id=session['user_id'])
             db.session.add(company)
             db.session.commit()
         except (DBAPIError, IntegrityError):
@@ -83,5 +83,5 @@ def portfolio():
 
         return redirect(url_for('.search_form'))
 
-    companies = Company.query.all()
+    companies = Company.query.filter_by(user_id=session['user_id']).all()
     return render_template('./stocks/stocks.html', companies=companies, form=form), 200
