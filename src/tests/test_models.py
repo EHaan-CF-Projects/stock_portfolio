@@ -28,9 +28,9 @@ class TestPortfolioModel:
     def test_portfolio_name(self, portfolio):
         assert portfolio.name == 'Default'
 
-#  TEST NOT WORKING - USER ID PULLED FROM SESSION INTO PORTFOLIO DATABASE?
-    # def test_portfolio_user_id(self, portfolio):
-    #     assert portfolio.user_id == 1
+    def test_portfolio_user_id(self, portfolio):
+        portfolios = Portfolio.query.all()
+        assert len(portfolios) == 1
 
 
 class TestUserModel:
