@@ -105,15 +105,14 @@ class TestAuthentication:
         )
         assert b'Stock - Login' in res.data
 
-    # def test_login_to_portfolio_redirect(self, client, user, company):
-    #     """Test that the user is redirected to their portfolio page"""
-    #     res = client.post(
-    #         '/login',
-    #         data={'email': 'test@test.com', 'password': 'password'},
-    #         follow_redirects=True
-    #     )
-    #     expected = f'{company.name}'
-    #     assert expected.encode() in res.data
+    def test_login_to_portfolio_redirect(self, client, user, company):
+        """Test that the user is redirected to their portfolio page"""
+        res = client.post(
+            '/login',
+            data={'email': 'test@test.com', 'password': 'password'},
+            follow_redirects=True
+        )
+        assert b'Stock - Stocks' in res.data
 
     # Logout
 
@@ -194,9 +193,15 @@ class TestAuthenticatedRoutes:
         res = authenticated_client.get('/portfolio')
         assert b'Stock - Stocks' in res.data
 
-    def test_portfolio_route_status_unauthenticated(status, client, company, portfolio):
+    def test_portfolio_route_status_unauthenticated(self, client, company, portfolio):
         res = client.get('/portfolio')
         assert res.status_code == 404
+
+    def test_create_new_portfolio(self, authenticated_client, user):
+        data = {'name': 'pasta'}
+        res = authenticated_client.post('/portfolio', data=data, follow_redirects=True)
+        assert res.status_code == 200
+        assert b'Stock - Search'
 
     def test_portfolio_to_search_redirect_status(self, authenticated_client, company, portfolio, user):
         res = authenticated_client.post(

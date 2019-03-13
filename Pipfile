@@ -6,6 +6,7 @@ verify_ssl = true
 [dev-packages]
 pep8 = "*"
 autopep8 = "*"
+pytest = "*"
 pytest-watch = "*"
 pytest-cov = "*"
 
@@ -15,8 +16,7 @@ flask = "*"
 requests = "*"
 flask-sqlalchemy = "*"
 psycopg2-binary = "*"
-flask-migrate = "*"
-pytest = "*"
+flask-migrate = "*
 flask-wtf = "*"
 passlib = "*"
 
