@@ -20,11 +20,29 @@ class TestBaseRoutes:
 
 class TestAuthentication:
     """Tests for user authentication and access."""
+
+    # Nav Bar
+
+    def test_has_correct_nav_when_not_logged_in(self, client):
+        res = client.get('/')
+        assert b'<a href="/"' in res.data
+        assert b'<a href="/register"' in res.data
+        assert b'<a href="/login"' in res.data
+        assert b'<a href="/logout"' not in res.data
+
+    def test_has_correct_nav_when_logged_in(self, authenticated_client):
+        res = authenticated_client.get('/')
+        assert b'<a href="/"' in res.data
+        assert b'<a href="/register"' not in res.data
+        assert b'<a href="/login"' not in res.data
+        assert b'<a href="/logout"' in res.data
+
     def test_register_route_status(self, client):
         """Tests register route status."""
         res = client.get('/register')
         assert res.status_code == 200
 
+    # Register
     def test_registration_body(self, client):
         """Tests register route content."""
         res = client.get('/register')
@@ -38,6 +56,13 @@ class TestAuthentication:
         )
         assert b'Stock - Register' in res.data
 
+    def test_user_already_exists(self, client):
+        credentials = {'email': 'test@test.com', 'password': 'password'}
+        res = client.post('/register', data=credentials, follow_redirects=True)
+        res = client.post('/register', data=credentials, follow_redirects=True)
+        assert b'test@test.com has already been registered.' in res.data
+        assert b'<title>Stock - Register</title>' in res.data
+
     def test_registration_redirect_status(self, client):
         """Test user is redirected to login page after registration."""
         res = client.post(
@@ -47,6 +72,7 @@ class TestAuthentication:
         )
         assert b'Stock - Login' in res.data
 
+# Login
     def test_login_page_status(self, client):
         """Test register route status"""
         res = client.get('/login')
@@ -79,15 +105,17 @@ class TestAuthentication:
         )
         assert b'Stock - Login' in res.data
 
-    def test_login_to_portfolio_redirect(self, client, user, company):
-        """Test that the user is redirected to their portfolio page"""
-        res = client.post(
-            '/login',
-            data={'email': 'test@test.com', 'password': 'password'},
-            follow_redirects=True
-        )
-        expected = f'{company.name}'
-        assert expected.encode() in res.data
+    # def test_login_to_portfolio_redirect(self, client, user, company):
+    #     """Test that the user is redirected to their portfolio page"""
+    #     res = client.post(
+    #         '/login',
+    #         data={'email': 'test@test.com', 'password': 'password'},
+    #         follow_redirects=True
+    #     )
+    #     expected = f'{company.name}'
+    #     assert expected.encode() in res.data
+
+    # Logout
 
     def test_logout_redirect_status(self, authenticated_client):
         """Tests that a signed in user can log out."""
